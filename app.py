@@ -10,14 +10,18 @@ with open("inventory.csv", newline='') as csvfile:
     inv_list = list(invreader)
 
 #Format data in list
-    for item in inv_list:
-        item['product_name'] = str(item['product_name'])
-        item['product_quantity'] = int(item['product_quantity'])
-        item['product_price'] = int(float(re.search(r'\d.\d{2}',item['product_price']).group())*100)
-        item['date_updated'] = datetime.date(int(re.search(r'\d{4}',item['date_updated']).group()),
-                                             int(re.match(r'\d{1,2}',item['date_updated']).group()),
-                                             int(re.search(r'\/\d{1,2}',item['date_updated']).group()[1:])
-                                             )
+    try:
+        for item in inv_list:
+            item['product_name'] = str(item['product_name'])
+            item['product_quantity'] = int(item['product_quantity'])
+            item['product_price'] = int(float(re.search(r'\d.\d{2}',item['product_price']).group())*100)
+            item['date_updated'] = datetime.date(int(re.search(r'\d{4}',item['date_updated']).group()),
+                                                 int(re.match(r'\d{1,2}',item['date_updated']).group()),
+                                                 int(re.search(r'\/\d{1,2}',item['date_updated']).group()[1:])
+                                                 )
+    except ValueError:
+        print("Invalid values exist in csv file. Please verify data.")
+        quit()
 
 #Initialize database
 db = SqliteDatabase('inventory.db')
